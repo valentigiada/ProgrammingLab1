@@ -1,2 +1,2 @@
-language = "bash"
-run = "/bin/bash"
+
+print('Hello World!')
