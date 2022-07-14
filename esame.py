@@ -58,7 +58,7 @@ class CSVTimeSeriesFile():
         list_epoch=[]
         
         for item in time_series:
-            list_epoch.append(item[0]) #item[0] è il primo elemento di ogni sottoliista time_series e indica gli epoch 
+            list_epoch.append(item[0]) 
     
         #controllo che il file non sia vuoto
         if len(list_epoch)==0:
@@ -75,7 +75,7 @@ class CSVTimeSeriesFile():
         #controllo che la serie temporale sia ordinata
         #parto da i=1 saltando il primo elemento perchè non ho nessun dato precedente con cui confrontarlo
         i=1
-        while i<(len(list_epoch)-1):
+        while i<(len(list_epoch)):
             if(list_epoch[i]<list_epoch[i-1]): 
                 raise ExamException('Errore, la serie temporale non è ordinata in modo crescente')
             i=i+1   
@@ -85,8 +85,8 @@ class CSVTimeSeriesFile():
 def compute_daily_max_difference(time_series):
     temperatures=[] #lista vuota dove salvare tutte le temperature 
          
-    previous_day=None #inizialmente gli assegno un valore impossibile, poi viene modificato. Gli avrei potuto dare anche valore -1
-    for item in time_series: #scorro tutte le sottoliste di time_series
+    previous_day=None #inizialmente gli assegno un valore impossibile, che non può essere nella lista; poi viene modificato. 
+    for item in time_series: #scorro tutte le sottoliste di "time_series"
         temperatures_per_day=[] #sottolista vuota dove salvare le temperature rilevate per ogni giornata
         day_start_epoch=item[0]-(item[0]%86400) #trovo l'epoch di inizio giornata e tramite questa operazione, tutti gli epoch appartenenti al giorno corrente, saranno uguali a quello di inizio giornata 
         if(day_start_epoch!=previous_day):
@@ -94,16 +94,13 @@ def compute_daily_max_difference(time_series):
                 if (list[0]-(list[0]%86400)==day_start_epoch): #se l'epoch che considero è uguale all'epoch di inizio giornata, appartiene al giorno corrente dunque aggiungo la rispettiva temperatura alla sottolista relativa al giorno corrente
                     temperatures_per_day.append(list[1]) 
             temperatures.append(temperatures_per_day)
-        previous_day=day_start_epoch #setto il giorno precedente al giorno corrente 
-
-        
-    #di tutte le sottoliste devo trovare il valore max e min e farne la sottrazione così da trovare l'escursione termica giornaliera 
+        previous_day=day_start_epoch #setto il giorno precedente al giorno corrente  
 
     result=[] #lista vuota che conterrà le escursioni termiche per ogni giornata 
 
-    for temperatures_per_day in temperatures: #scorro tutte le sottoliste della lista_temp_giorno
-        if len(temperatures_per_day)==1: #se una sottolista contiene solo un elemento ovvero per quella giornata è stata rilevata una sola temperatura, l'escursione termica non è definita, dunque, come da consegna, si aggiunge alla lista dei risultati il valore 'none' per quella giornata
+    for temperatures_per_day in temperatures: #scorro tutte le sottoliste della lista "temperatures"
+        if len(temperatures_per_day)==1: #se una sottolista contiene solo un elemento ovvero per quella giornata è stata rilevata una sola temperatura, l'escursione termica non è definita, dunque, come da consegna, si aggiunge alla lista "result" il valore 'none' per quella giornata
             result.append('None')
         else: 
-            result.append(max(temperatures_per_day)-min(temperatures_per_day))
+            result.append(max(temperatures_per_day)-min(temperatures_per_day)) #altrimenti trovo il valore massimo e minimo della temperatura in ogni sottolista e faccio la differenza tra questi due valori, trovando così l'escursione termica giornaliera
     return ([result])
